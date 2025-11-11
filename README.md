@@ -34,7 +34,7 @@ A simple interactive ChatGPT-style chatbot application built using MERN stack. T
 1.  **Clone the Repository**
 
     ```bash
-    git clone [https://github.com/Nitya3003/ChatBot.git](https://github.com/Nitya3003/ChatBot.git)
+    git clone [https://github.com/Nitya3003/ChatBot.git]
     cd ChatBot
     ```
 
