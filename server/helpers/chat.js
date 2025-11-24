@@ -120,11 +120,11 @@ export default {
                         }
                     }
                 }, {
-                    $limit: 10
-                }, {
                     $sort: {
                         chatId: -1
                     }
+                }, {
+                    $limit: 50
                 }
             ]).toArray().catch((err) => {
                 reject(err)

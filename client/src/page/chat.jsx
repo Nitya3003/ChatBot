@@ -6,6 +6,7 @@ import { setLoading } from "../redux/loading";
 import { useDispatch, useSelector } from "react-redux";
 import { addList, emptyAllRes, insertNew, livePrompt } from "../redux/messages";
 import { emptyUser } from "../redux/user";
+import { addHistory } from "../redux/history";
 import instance from "../config/instance";
 import "./style.scss";
 
@@ -167,6 +168,38 @@ const InputArea = ({ status, chatRef, stateAction }) => {
           chatRef?.current?.loadResponse(stateAction, content, chatsId);
 
           stateAction({ type: "error", status: false });
+
+          // Refresh history after creating/updating chat
+          const refreshHistory = async () => {
+            try {
+              const historyRes = await instance.get("/api/chat/history");
+              if (historyRes?.data?.data) {
+                dispatch(addHistory(historyRes.data.data));
+              }
+            } catch (err) {
+              console.log("Error refreshing history:", err);
+            }
+          };
+
+          // If this is a new chat (POST request), navigate to the chat URL
+          if (!_id && res?.data?.data?._id) {
+            const newChatId = res.data.data._id;
+            refreshHistory();
+            // Navigate to the new chat after a short delay to ensure state is updated
+            setTimeout(() => {
+              navigate(`/chat/${newChatId}`);
+            }, 100);
+          } else if (_id) {
+            // For existing chats, just refresh history
+            refreshHistory();
+          } else if (res?.data?.data?._id) {
+            // Handle case where _id comes from response
+            const newChatId = res.data.data._id;
+            refreshHistory();
+            setTimeout(() => {
+              navigate(`/chat/${newChatId}`);
+            }, 100);
+          }
         }
       }
     }
@@ -208,6 +241,14 @@ const InputArea = ({ status, chatRef, stateAction }) => {
                 value={prompt}
                 onChange={(e) => {
                   dispatch(livePrompt(e.target.value));
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    if (prompt?.length > 0 && !status?.loading) {
+                      FormHandle();
+                    }
+                  }
                 }}
               />
               {!status?.loading ? (
@@ -263,7 +304,7 @@ const InputArea = ({ status, chatRef, stateAction }) => {
           target="_blank"
           href="https://help.openai.com/en/articles/6825453-chatgpt-release-notes"
         >
-          ChatGPT Mar 14 Version.
+          CloudGPT - IGUANA
         </a>{" "}
         Free Research Preview. Our goal is to make AI systems more natural and
         safe to interact with. Your feedback will help us improve.

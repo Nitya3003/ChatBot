@@ -10,6 +10,10 @@ let router = Router()
 const CheckLogged = async (req, res, next) => {
     const token = req.cookies.userToken
 
+    // Debug: log incoming cookies and token for diagnosis (remove in production)
+    console.log('CheckLogged - cookies:', req.cookies);
+    console.log('CheckLogged - token:', token);
+
     // **FIX 1 of 3**
     jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
         if (decoded) {

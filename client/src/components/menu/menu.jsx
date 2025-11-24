@@ -19,7 +19,7 @@ const Menu = ({ changeColorMode }) => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
-  const { history } = useSelector((state) => state)
+  const { history, user } = useSelector((state) => state)
   const [confirm, setConfim] = useState(false)
 
   const logOut = async () => {
@@ -90,7 +90,7 @@ const Menu = ({ changeColorMode }) => {
     })
   })
 
-  // History Get
+  // History Get - Refresh when path changes or when user is logged in
   useEffect(() => {
     const getHistory = async () => {
       let res = null
@@ -99,22 +99,27 @@ const Menu = ({ changeColorMode }) => {
       } catch (err) {
         console.log(err)
       } finally {
-        if (res?.data) {
+        if (res?.data?.data) {
           dispatch(addHistory(res?.data?.data))
         }
       }
     }
 
-    getHistory()
-  }, [path])
+    // Only fetch history if user is logged in
+    if (user) {
+      getHistory()
+    }
+  }, [path, user, dispatch])
 
   // History active
   useEffect(() => {
     setConfim(false)
-    let chatId = path.replace('/chat/', '')
-    chatId = chatId.replace('/', '')
+    let chatId = null
+    if (path.startsWith('/chat/') && path.length > 7) {
+      chatId = path.replace('/chat/', '').replace('/', '')
+    }
     dispatch(activePage(chatId))
-  }, [path, history])
+  }, [path, history, dispatch])
 
   return (
     <Fragment>
@@ -130,39 +135,50 @@ const Menu = ({ changeColorMode }) => {
 
         <div className='title'>
           {
-            path.length > 6 ? history[0]?.prompt : 'New chat'
+            (path.length > 6 && path.startsWith('/chat/')) ? history[0]?.prompt : 'New chat'
           }
         </div>
 
         <div className='end'>
           <button onClick={() => {
-            if (path.includes('/chat')) {
-              navigate('/')
-            } else {
-              navigate('/chat')
-            }
+            // Always navigate to home to start a new chat
+            navigate('/')
           }}><Plus /></button>
         </div>
       </header>
 
       <div className="menu" ref={menuRef}>
-        <div>
+        <div className="menu-header">
+          <div className="menu-logo-section">
+            <div className="menu-logo-square">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M2 17L12 22L22 17" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M2 12L12 17L22 12" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
+            <div className="menu-title-section">
+              <h2 className="menu-title">CloudGPT - IGUANA</h2>
+              <p className="menu-subtitle">Intelligent AI Assistant</p>
+            </div>
+          </div>
           <button
             type='button'
+            className='new-chat-btn'
             aria-label='new'
             onClick={() => {
-              if (path.includes('/chat')) {
-                navigate('/')
-              } else {
-                navigate('/chat')
-              }
+              // Navigate to home to start a new chat (previous chats are preserved)
+              navigate('/')
             }}
           >
-            <Plus />New chat
+            <Plus />New Chat
           </button>
         </div>
 
         <div className="history">
+          {history?.length > 0 && (
+            <div className="history-heading">Recent Chats</div>
+          )}
           {
             history?.map((obj, key) => {
               if (obj?.active) {
@@ -172,8 +188,9 @@ const Menu = ({ changeColorMode }) => {
                     onClick={() => {
                       navigate(`/chat/${obj?.chatId}`)
                     }}
-                  ><Message />
-                    {obj?.prompt}
+                  >
+                    <Message />
+                    <span>{obj?.prompt}</span>
                   </button>
                 )
               } else {
@@ -182,7 +199,10 @@ const Menu = ({ changeColorMode }) => {
                     onClick={() => {
                       navigate(`/chat/${obj?.chatId}`)
                     }}
-                  ><Message />{obj?.prompt}</button>)
+                  >
+                    <Message />
+                    <span>{obj?.prompt}</span>
+                  </button>)
               }
             })
           }

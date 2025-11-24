@@ -1,4 +1,4 @@
-# ChatBot
+# CloudGPT - IGUANA
 
 A simple interactive ChatGPT-style chatbot application built using MERN stack. The project integrates with OpenAI API to generate AI responses and provides a clean chat UI.
 
@@ -35,7 +35,7 @@ A simple interactive ChatGPT-style chatbot application built using MERN stack. T
 
     ```bash
     git clone [https://github.com/Nitya3003/ChatBot.git]
-    cd ChatBot
+    cd CloudGPT-IGUANA
     ```
 
 ---
@@ -54,7 +54,7 @@ A simple interactive ChatGPT-style chatbot application built using MERN stack. T
 
 3.  **Start the Backend**
 
-    (From the root `ChatBot` directory)
+    (From the root `CloudGPT-IGUANA` directory)
 
     ```bash
     cd server

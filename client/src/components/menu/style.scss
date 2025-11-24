@@ -46,12 +46,12 @@ header {
     position: fixed;
     top: 0;
     width: 100%;
-    background: rgba(52, 53, 65, 1);
+    background: #1e1e2e;
     padding-top: .5em;
     padding-bottom: .3em;
     color: rgba(217, 217, 227, 1);
     z-index: 1000;
-    box-shadow: 0px 0px 1px 1px hsla(0, 0%, 100%, .2);
+    box-shadow: 0px 0px 1px 1px rgba(139, 92, 246, 0.2);
 
     button {
       background: transparent;
@@ -92,10 +92,13 @@ header {
   position: fixed;
   z-index: 2000;
   width: 260px;
-  background: rgba(32, 33, 35, 1);
+  max-width: 260px;
+  background: #1e1e2e;
   height: 100%;
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
+  overflow: hidden;
 
   @media screen and (max-width:767px) {
     display: none;
@@ -103,6 +106,88 @@ header {
     &:is(.showMd),
     &:is(.showMd)+.exitMenu {
       display: flex;
+    }
+  }
+
+  .menu-header {
+    padding: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    width: 100%;
+    box-sizing: border-box;
+    flex-shrink: 0;
+
+    .menu-logo-section {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+
+      .menu-logo-square {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        svg {
+          width: 20px;
+          height: 20px;
+        }
+      }
+
+      .menu-title-section {
+        flex: 1;
+
+        .menu-title {
+          font-size: 1rem;
+          font-weight: 600;
+          color: #ffffff;
+          margin: 0;
+          line-height: 1.2;
+        }
+
+        .menu-subtitle {
+          font-size: 0.75rem;
+          color: rgba(255, 255, 255, 0.6);
+          margin: 0;
+          line-height: 1.2;
+        }
+      }
+    }
+
+    .new-chat-btn {
+      width: 100%;
+      max-width: 100%;
+      background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+      color: white;
+      border: none;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+
+      svg {
+        width: 16px;
+        height: 16px;
+        position: static;
+        padding: 0;
+      }
+
+      &:hover {
+        background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+      }
     }
   }
 
@@ -123,7 +208,7 @@ header {
     line-height: 1.25rem;
 
     &:hover {
-      background: hsla(240, 9%, 59%, .1);
+      background: rgba(139, 92, 246, 0.1);
       cursor: pointer;
     }
 
@@ -136,20 +221,15 @@ header {
     }
   }
 
-  button[aria-label='new'] {
-    border: 1px solid hsla(0, 0%, 100%, .2);
-    width: calc(260px - 1rem);
-    margin-top: .5rem;
-    margin-bottom: .6rem;
-    margin-left: .5rem;
-  }
-
   .history {
-    height: 100%;
+    flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
     margin-bottom: .5rem;
-    width: 259px;
+    width: 100%;
+    padding: 0.5rem;
+    box-sizing: border-box;
+    min-height: 0;
 
     &::-webkit-scrollbar {
       width: 8px;
@@ -160,43 +240,83 @@ header {
     }
 
     &::-webkit-scrollbar-thumb {
-      background: rgba(86, 88, 105, 1);
+      background: rgba(139, 92, 246, 0.3);
       border-radius: 30px;
 
       &:hover {
-        background: rgba(172, 172, 190, 1);
+        background: rgba(139, 92, 246, 0.5);
       }
     }
 
+    .history-heading {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.5rem 0.75rem;
+      margin-bottom: 0.5rem;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
     button {
-      width: calc(260px - 1rem);
-      margin-left: .5rem;
+      width: 100%;
+      max-width: 100%;
+      margin-left: 0;
       margin-bottom: 5px;
-      padding-right: .75rem;
+      padding: 0.75rem;
+      padding-left: 3em;
+      padding-right: 0.75rem;
       white-space: nowrap;
       text-overflow: ellipsis;
       overflow: hidden;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      box-sizing: border-box;
+      position: relative;
+      display: flex;
+      align-items: center;
+      text-align: left;
+
+      svg {
+        position: absolute;
+        left: 0.75rem;
+        flex-shrink: 0;
+      }
+
+      span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        flex: 1;
+        min-width: 0;
+        display: block;
+      }
     }
 
     .active {
-      background: rgba(52, 53, 65, 1);
+      background: rgba(139, 92, 246, 0.2);
+      border: 1px solid rgba(139, 92, 246, 0.3);
     }
   }
 
   .actions {
-    width: calc(260px - 1rem);
-    bottom: 0;
-    border-top: 1px solid hsla(0, 0%, 100%, .2);
+    width: 100%;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0.5rem;
     padding-top: 5px;
     padding-bottom: 5px;
-    background: rgba(32, 33, 35, 1);
-    margin-left: .5rem;
+    background: #1e1e2e;
+    margin-left: 0;
+    box-sizing: border-box;
+    flex-shrink: 0;
 
     button {
       margin-bottom: 3px;
 
       &:hover {
-        background: hsla(240, 9%, 59%, .1);
+        background: rgba(139, 92, 246, 0.1);
       }
 
       svg {
